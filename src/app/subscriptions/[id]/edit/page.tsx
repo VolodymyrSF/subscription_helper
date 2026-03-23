@@ -7,6 +7,8 @@ import { updateSubscriptionAction } from "@/lib/subscriptions/actions";
 import { getSubscriptionById, getSubscriptionFormOptions } from "@/lib/subscriptions/data";
 import { formatTagsForInput } from "@/lib/subscriptions/tags";
 
+export const dynamic = "force-dynamic";
+
 export default async function EditSubscriptionPage({
   params
 }: {

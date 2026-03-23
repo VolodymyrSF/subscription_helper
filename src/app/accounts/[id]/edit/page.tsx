@@ -8,6 +8,8 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { deleteAccountAction, updateAccountAction } from "@/lib/accounts/actions";
 import { getAccountById } from "@/lib/accounts/data";
 
+export const dynamic = "force-dynamic";
+
 export default async function EditAccountPage({
   params
 }: {

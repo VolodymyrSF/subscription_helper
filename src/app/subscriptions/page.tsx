@@ -9,6 +9,8 @@ import { listSubscriptions } from "@/lib/subscriptions/data";
 
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;
 
+export const dynamic = "force-dynamic";
+
 export default async function SubscriptionsPage({ searchParams }: { searchParams: SearchParams }) {
   const filters = normalizeSubscriptionFilters(await searchParams);
   const data = await listSubscriptions(filters);

@@ -9,6 +9,8 @@ import { categoryLabels } from "@/lib/constants";
 import { formatDisplayDate } from "@/lib/formatting/date";
 import { getDashboardData } from "@/lib/subscriptions/data";
 
+export const dynamic = "force-dynamic";
+
 export default async function DashboardPage() {
   const data = await getDashboardData();
 

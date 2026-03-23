@@ -13,6 +13,8 @@ import { formatDisplayDate } from "@/lib/formatting/date";
 import { getDueSoonLabel } from "@/lib/subscriptions/helpers";
 import { parseStoredTags } from "@/lib/subscriptions/tags";
 
+export const dynamic = "force-dynamic";
+
 export default async function SubscriptionDetailsPage({
   params
 }: {

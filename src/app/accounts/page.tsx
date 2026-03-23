@@ -7,6 +7,8 @@ import { deleteAccountAction } from "@/lib/accounts/actions";
 import { listAccounts } from "@/lib/accounts/data";
 import { formatDisplayDate } from "@/lib/formatting/date";
 
+export const dynamic = "force-dynamic";
+
 export default async function AccountsPage() {
   const accounts = await listAccounts();
 

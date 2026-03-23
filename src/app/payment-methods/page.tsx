@@ -8,6 +8,8 @@ import { deletePaymentMethodAction } from "@/lib/payment-methods/actions";
 import { listPaymentMethods } from "@/lib/payment-methods/data";
 import { formatDisplayDate } from "@/lib/formatting/date";
 
+export const dynamic = "force-dynamic";
+
 export default async function PaymentMethodsPage() {
   const paymentMethods = await listPaymentMethods();
 

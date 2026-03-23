@@ -11,6 +11,8 @@ import {
 } from "@/lib/payment-methods/actions";
 import { getPaymentMethodById } from "@/lib/payment-methods/data";
 
+export const dynamic = "force-dynamic";
+
 export default async function EditPaymentMethodPage({
   params
 }: {

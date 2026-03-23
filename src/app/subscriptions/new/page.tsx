@@ -6,6 +6,8 @@ import {
   SubscriptionForm
 } from "@/components/subscriptions/SubscriptionForm";
 
+export const dynamic = "force-dynamic";
+
 export default async function NewSubscriptionPage() {
   const { accounts, paymentMethods } = await getSubscriptionFormOptions();
 
