@@ -1,0 +1,129 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum Currency {
+  UAH
+  USD
+  EUR
+  PLN
+  GBP
+}
+
+enum BillingPeriod {
+  weekly
+  monthly
+  quarterly
+  yearly
+  custom
+}
+
+enum RenewalType {
+  auto
+  manual
+}
+
+enum SubscriptionStatus {
+  active
+  trial
+  paused
+  canceled
+  expired
+}
+
+enum SubscriptionCategory {
+  streaming
+  software
+  cloud
+  gaming
+  music
+  education
+  utilities
+  hosting
+  other
+}
+
+enum ReviewState {
+  keep
+  review
+  cancel
+}
+
+enum PaymentMethodType {
+  card
+  paypal
+  apple
+  google
+  crypto
+  other
+}
+
+model Subscription {
+  id               String               @id @default(cuid())
+  name             String
+  provider         String
+  planName         String?
+  amountInCents    Int
+  currency         Currency
+  billingPeriod    BillingPeriod
+  customPeriodDays Int?
+  nextChargeAt     DateTime?
+  startedAt        DateTime?
+  renewalType      RenewalType
+  status           SubscriptionStatus
+  isTrial          Boolean              @default(false)
+  trialEndsAt      DateTime?
+  accountId        String?
+  paymentMethodId  String?
+  category         SubscriptionCategory
+  manageUrl        String?
+  cancelUrl        String?
+  notes            String?
+  tagsText         String               @default("")
+  lastUsedAt       DateTime?
+  reviewState      ReviewState          @default(keep)
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+  account          Account?             @relation(fields: [accountId], references: [id], onDelete: SetNull)
+  paymentMethod    PaymentMethod?       @relation(fields: [paymentMethodId], references: [id], onDelete: SetNull)
+
+  @@index([status])
+  @@index([reviewState])
+  @@index([category])
+  @@index([nextChargeAt])
+  @@index([accountId])
+  @@index([paymentMethodId])
+}
+
+model Account {
+  id            String         @id @default(cuid())
+  label         String
+  email         String?
+  provider      String?
+  notes         String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  subscriptions Subscription[]
+
+  @@index([label])
+}
+
+model PaymentMethod {
+  id            String            @id @default(cuid())
+  label         String
+  type          PaymentMethodType
+  last4         String?
+  bankName      String?
+  notes         String?
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  subscriptions Subscription[]
+
+  @@index([label])
+}
