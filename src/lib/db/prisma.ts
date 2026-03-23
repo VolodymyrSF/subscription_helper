@@ -7,17 +7,25 @@ const globalForPrisma = globalThis as unknown as {
 
 function createPrismaClient() {
   const log: Prisma.LogLevel[] = process.env.NODE_ENV === "development" ? ["error", "warn"] : ["error"];
+  const tursoUrl = process.env.TURSO_DATABASE_URL?.trim() || "";
+  const tursoToken = process.env.TURSO_AUTH_TOKEN?.trim() || "";
 
-  if (process.env.TURSO_DATABASE_URL) {
+  if (tursoUrl) {
     const adapter = new PrismaLibSQL({
-      url: process.env.TURSO_DATABASE_URL,
-      authToken: process.env.TURSO_AUTH_TOKEN
+      url: tursoUrl,
+      authToken: tursoToken || undefined
     });
 
     return new PrismaClient({
       adapter,
       log
     });
+  }
+
+  if (process.env.NODE_ENV === "production") {
+    throw new Error(
+      "TURSO_DATABASE_URL is missing in production. Add TURSO_DATABASE_URL and TURSO_AUTH_TOKEN in Vercel project environment variables and redeploy."
+    );
   }
 
   return new PrismaClient({ log });
