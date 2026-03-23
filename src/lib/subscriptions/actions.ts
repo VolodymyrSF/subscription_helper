@@ -86,13 +86,13 @@ export async function createSubscriptionAction(
     };
   }
 
+  let subscriptionId: string;
+
   try {
     const subscription = await prisma.subscription.create({
       data: mapSubscriptionData(parsed.data)
     });
-
-    revalidateSubscriptionRoutes(subscription.id);
-    redirect(`/subscriptions/${subscription.id}`);
+    subscriptionId = subscription.id;
   } catch (error) {
     console.error(error);
 
@@ -100,6 +100,9 @@ export async function createSubscriptionAction(
       message: "Could not create the subscription. Please try again."
     };
   }
+
+  revalidateSubscriptionRoutes(subscriptionId);
+  redirect(`/subscriptions/${subscriptionId}`);
 }
 
 export async function updateSubscriptionAction(
@@ -127,9 +130,6 @@ export async function updateSubscriptionAction(
       where: { id },
       data: mapSubscriptionData(parsed.data)
     });
-
-    revalidateSubscriptionRoutes(id);
-    redirect(`/subscriptions/${id}`);
   } catch (error) {
     console.error(error);
 
@@ -137,6 +137,9 @@ export async function updateSubscriptionAction(
       message: "Could not update the subscription. Please try again."
     };
   }
+
+  revalidateSubscriptionRoutes(id);
+  redirect(`/subscriptions/${id}`);
 }
 
 export async function deleteSubscriptionAction(id: string) {

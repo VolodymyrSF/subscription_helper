@@ -106,6 +106,10 @@ TURSO_DATABASE_URL=""
 TURSO_AUTH_TOKEN=""
 SUBSVAULT_APP_PASSWORD=""
 SUBSVAULT_SESSION_SECRET=""
+CRON_SECRET=""
+TELEGRAM_BOT_TOKEN=""
+TELEGRAM_CHAT_ID=""
+TELEGRAM_REMINDER_DAYS="10,7"
 ```
 
 At runtime, SubsVault uses Turso automatically when `TURSO_DATABASE_URL` is set. If that variable is empty, it falls back to local SQLite.
@@ -171,6 +175,10 @@ TURSO_DATABASE_URL=libsql://your-database-name-your-account.turso.io
 TURSO_AUTH_TOKEN=your-generated-token
 SUBSVAULT_APP_PASSWORD=choose-a-long-random-password
 SUBSVAULT_SESSION_SECRET=choose-a-long-random-secret
+CRON_SECRET=choose-a-random-secret-for-vercel-cron
+TELEGRAM_BOT_TOKEN=botfather-issued-token
+TELEGRAM_CHAT_ID=your-private-chat-id
+TELEGRAM_REMINDER_DAYS=10,7
 ```
 
 `DATABASE_URL` stays as a harmless local placeholder for Prisma's schema configuration during build, while runtime reads from Turso through the Prisma libSQL adapter.
@@ -200,6 +208,40 @@ Then apply the generated SQL file to Turso:
 turso db shell subsvault-prod < ./prisma/migrations/<timestamp>_add-something/migration.sql
 ```
 
+## Telegram reminders
+
+SubsVault now includes a Vercel Cron endpoint at `/api/cron/telegram-reminders` that sends one daily Telegram digest for subscriptions whose `nextChargeAt` or `trialEndsAt` falls exactly on the configured reminder days.
+
+Default reminder days:
+
+```bash
+TELEGRAM_REMINDER_DAYS=10,7
+```
+
+The checked-in [vercel.json](/Users/user/IdeaProjects/subscription_helper/vercel.json) schedules this endpoint once per day at `07:00 UTC`.
+
+### Telegram bot setup
+
+1. Create a bot with `@BotFather` and copy the bot token.
+2. Open a private chat with the bot and send any message like `/start`.
+3. Get your chat ID:
+
+```bash
+curl "https://api.telegram.org/bot<YOUR_BOT_TOKEN>/getUpdates"
+```
+
+4. Copy the numeric `chat.id` into `TELEGRAM_CHAT_ID`.
+
+### Manual reminder test
+
+After deployment, you can test the cron endpoint yourself:
+
+```bash
+curl -H "Authorization: Bearer <YOUR_CRON_SECRET>" https://<your-vercel-domain>/api/cron/telegram-reminders
+```
+
+If nothing matches the current reminder days, the route returns JSON with `"sent": false`.
+
 ## Key business rules
 
 - Recurring totals are calculated in cents to avoid floating-point drift.
@@ -221,7 +263,7 @@ turso db shell subsvault-prod < ./prisma/migrations/<timestamp>_add-something/mi
 
 - No authentication or multi-user support
 - No currency conversion or FX normalization
-- No remote APIs, notifications, email parsing, OCR, or imports
+- No email parsing, OCR, or automatic imports
 - No charts beyond lightweight grouped summaries
 - Turso deployments use manual SQL application for schema changes rather than direct `prisma migrate dev` against the remote database
 

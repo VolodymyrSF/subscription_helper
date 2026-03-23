@@ -5,7 +5,7 @@ import { authCookieName, getSessionSecret, isAuthConfigured, isProductionEnviron
 import { normalizeRedirectPath, verifySessionToken } from "@/lib/auth/session";
 
 function isPublicPath(pathname: string) {
-  return pathname === "/login" || pathname.startsWith("/auth/");
+  return pathname === "/login" || pathname.startsWith("/auth/") || pathname.startsWith("/api/cron/");
 }
 
 export async function middleware(request: NextRequest) {

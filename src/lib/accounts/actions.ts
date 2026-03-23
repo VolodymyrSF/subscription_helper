@@ -32,9 +32,6 @@ export async function createAccountAction(
     await prisma.account.create({
       data: parsed.data
     });
-
-    revalidateAccountRoutes();
-    redirect("/accounts");
   } catch (error) {
     console.error(error);
 
@@ -42,6 +39,9 @@ export async function createAccountAction(
       message: "Could not create the account. Please try again."
     };
   }
+
+  revalidateAccountRoutes();
+  redirect("/accounts");
 }
 
 export async function updateAccountAction(
@@ -60,9 +60,6 @@ export async function updateAccountAction(
       where: { id },
       data: parsed.data
     });
-
-    revalidateAccountRoutes(id);
-    redirect("/accounts");
   } catch (error) {
     console.error(error);
 
@@ -70,6 +67,9 @@ export async function updateAccountAction(
       message: "Could not update the account. Please try again."
     };
   }
+
+  revalidateAccountRoutes(id);
+  redirect("/accounts");
 }
 
 export async function deleteAccountAction(id: string) {

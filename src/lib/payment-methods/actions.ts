@@ -32,9 +32,6 @@ export async function createPaymentMethodAction(
     await prisma.paymentMethod.create({
       data: parsed.data
     });
-
-    revalidatePaymentMethodRoutes();
-    redirect("/payment-methods");
   } catch (error) {
     console.error(error);
 
@@ -42,6 +39,9 @@ export async function createPaymentMethodAction(
       message: "Could not create the payment method. Please try again."
     };
   }
+
+  revalidatePaymentMethodRoutes();
+  redirect("/payment-methods");
 }
 
 export async function updatePaymentMethodAction(
@@ -60,9 +60,6 @@ export async function updatePaymentMethodAction(
       where: { id },
       data: parsed.data
     });
-
-    revalidatePaymentMethodRoutes(id);
-    redirect("/payment-methods");
   } catch (error) {
     console.error(error);
 
@@ -70,6 +67,9 @@ export async function updatePaymentMethodAction(
       message: "Could not update the payment method. Please try again."
     };
   }
+
+  revalidatePaymentMethodRoutes(id);
+  redirect("/payment-methods");
 }
 
 export async function deletePaymentMethodAction(id: string) {
